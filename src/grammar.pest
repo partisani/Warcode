@@ -1,0 +1,33 @@
+main = _{ (fndec | struc)+ }
+
+exp = _{ (fncall | inline | letdec | assign) }
+
+fndec = {
+    ident ~ lparen ~ (ident ~ ("," ~ ident)*)? ~ rparen ~ "{"
+        ~ (exp ~ endl)* ~ 
+    "}"
+}
+
+struc = {
+    "struc" ~ ident ~ "{" ~ (ident ~ ("," ~ ident)*)? ~ "}"
+}
+
+fncall = { (fnpath ~ lparen ~ (value ~ ("," ~ value)*)? ~ rparen) }
+inline = { "#asm " ~ (!endl ~ ANY)+ }
+letdec = { "let" ~ "mut"? ~ ident ~ ("=" ~ value)? }
+assign = { idpath ~ "=" ~ value }
+
+ident  = @{ (ASCII_ALPHA | "_" | ASCII_DIGIT)+ }
+idpath =  { ident ~ ("." ~ ident)* }
+fnpath =  { ident ~ (":" ~ ident)* }
+value  =  { num | ptr | fncall | ident }
+lparen = _{ "(" }
+rparen = _{ ")" }
+endl   = _{ ";" }
+
+num =  { ASCII_DIGIT+ }
+ptr =  { "*" ~ ASCII_DIGIT+ }
+
+WHITESPACE = _{ " " | "\t" | NL }
+NL         = _{ "\n" }
+COMMENT    = _{ "//" ~ (!NL ~ ANY)* }
