@@ -1,4 +1,4 @@
-main = _{ (fndec | struc)+ }
+main = _{ SOI ~ (fndec | struc)+ ~ EOI }
 
 exp = _{ (fncall | inline | letdec | assign) }
 
@@ -29,5 +29,5 @@ num =  { ASCII_DIGIT+ }
 ptr =  { "*" ~ ASCII_DIGIT+ }
 
 WHITESPACE = _{ " " | "\t" | NL }
-NL         = _{ "\n" }
+NL         = _{ NEWLINE }
 COMMENT    = _{ "//" ~ (!NL ~ ANY)* }
