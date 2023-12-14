@@ -1,4 +1,6 @@
 /target
 /.cargo
 game.war
+game.asm
 replit.nix
+.replit
