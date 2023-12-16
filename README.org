@@ -4,9 +4,18 @@ that compiles to 6502 assembly. It has a very simple and
 /beginner friendly/ syntax that makes it easy to use, but
 hard to master.
 
-** Examples:
-#+BEGIN_SRC
-struc player {
-  x, y
-}
-#+END_SRC
+** Objectives:
++ Having a simple syntax.
++ Being small, but usable.
++ Being fast to parse and compile.
++ Allowing code to run on different systems, like the GameTank, or the NES.
+
+** Getting Started:
+*** Installation:
+/WIP/
+
+*** Getting Started:
+Warcode, being a small language, hasn't too many features,
+for now it includes only variables, functions, structs,
+constants, and, last but not least, we have the ~#asm~ directive,
+that tells just tells the compiler to include it in the final assembly.

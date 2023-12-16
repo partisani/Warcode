@@ -30,7 +30,7 @@ fn gen_struc(children: Vec<Pair<'_, Rule>>) -> String {
 		name = children[0].as_str(),
 		code = {
 			let fields = children[1..].iter().map(|f| f.as_str());
-			fields.map(|f| "\tsta $0, x ; zero-paged adress ; field ".to_owned() + f + "\n\tinx").collect::<Vec<String>>().join("\n")
+			fields.map(|f| "\tsta $0, x ; zero-paged address ; field ".to_owned() + f + "\n\tinx").collect::<Vec<String>>().join("\n")
 		},
 		consts = {
 			let fields = children[1..].iter().map(|f| f.as_str()).enumerate();

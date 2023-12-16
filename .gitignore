@@ -1,6 +1,6 @@
 /target
 /.cargo
-game.war
-game.asm
+/game
+build.ps1
 replit.nix
 .replit
