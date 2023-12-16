@@ -2,7 +2,6 @@ use pest::Parser;
 use pest_derive::Parser;
 use std::{env, fs};
 
-mod compiler;
 mod parser;
 
 #[derive(Parser)]

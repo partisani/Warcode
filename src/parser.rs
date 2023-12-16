@@ -6,39 +6,48 @@ pub fn parse(ast: Pairs<'_, Rule>) -> String {
 	let mut out = String::new();
 
 	for node in ast.clone() {
-		out.push_str(&parse_node(node));
+		let children = node.clone().into_inner().collect::<Vec<Pair<'_, Rule>>>();
+
+		out.push_str(&match node.as_rule() {
+			Rule::struc => gen_struc(children),
+			Rule::fndec => gen_fndec(children),
+			_ => String::new(),
+		});
 	}
 
 	out
 }
 
-fn parse_node(node: Pair<'_, Rule>) -> String {
-	let mut out = String::new();
-
-	let children = node.clone().into_inner().collect::<Vec<Pair<'_, Rule>>>();
-
-	match node.as_rule() {
-		Rule::struc => {
-			let fields = &children[1..];
-			out.push_str(&formatdoc!(
-				r#"
-					create_{}:
-					{}
-				"#,
-				children[0].as_str(),
-				fields
-					.iter()
-					.map(|p| "\tlda 0\n\tsta $0; ".to_owned() + p.as_str())
-					.collect::<Vec<String>>()
-					.join("\n")
-			));
+fn gen_struc(children: Vec<Pair<'_, Rule>>) -> String {
+	return formatdoc! {
+		r#"
+			{consts}
+			create_{name}:
+				plx
+				lda #0
+			{code}
+		"#,
+		name = children[0].as_str(),
+		code = {
+			let fields = children[1..].iter().map(|f| f.as_str());
+			fields.map(|f| "\tsta $0, x ; zero-paged adress ; field ".to_owned() + f + "\n\tinx").collect::<Vec<String>>().join("\n")
+		},
+		consts = {
+			let fields = children[1..].iter().map(|f| f.as_str()).enumerate();
+			fields.map(|f| "player.".to_owned() + f.1 + " = " + &f.0.to_string()).collect::<Vec<String>>().join("\n")
 		}
-		_ => {
-			for n in node.into_inner() {
-				out.push_str(&parse_node(n));
-			}
-		}
-	}
+	};
+}
 
-	out
+fn gen_fndec(children: Vec<Pair<'_, Rule>>) -> String {
+	return formatdoc! {
+		r#"
+			{label}:
+			{code}
+		"#,
+		label = children[0].as_str(),
+		code = {
+			"\trts"
+		}
+	};
 }

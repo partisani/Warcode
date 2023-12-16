@@ -1,4 +1,4 @@
-main = _{ SOI ~ (fndec | struc)+ ~ EOI }
+main = _{ SOI ~ ((fndec | struc | inline | const) ~ endl)+ ~ EOI }
 
 exp = _{ (fncall | inline | letdec | assign) }
 
@@ -12,14 +12,17 @@ struc = {
     "struc" ~ ident ~ "{" ~ (ident ~ ("," ~ ident)*)? ~ "}"
 }
 
-fncall = { (fnpath ~ lparen ~ (value ~ ("," ~ value)*)? ~ rparen) }
+const = {
+    "const" ~ ident ~ "=" ~ (num | ptr)
+}
+
+fncall = { (ident ~ lparen ~ (value ~ ("," ~ value)*)? ~ rparen) }
 inline = { "#asm " ~ (!endl ~ ANY)+ }
-letdec = { "let" ~ "mut"? ~ ident ~ ("=" ~ value)? }
+letdec = { "let" ~ ident ~ (":" ~ ident) ~ ("=" ~ value)? }
 assign = { idpath ~ "=" ~ value }
 
 ident  = @{ (ASCII_ALPHA | "_" | ASCII_DIGIT)+ }
 idpath =  { ident ~ ("." ~ ident)* }
-fnpath =  { ident ~ (":" ~ ident)* }
 value  =  { num | ptr | fncall | ident }
 lparen = _{ "(" }
 rparen = _{ ")" }
